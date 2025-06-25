@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KDT 해커톤 기획서 - 지역축제 플랫폼</title>
+    <style>
+      :root {
+        --main-navy: #2d3748;
+        --main-blue: #667eea;
+        --main-light: #f5f7fa;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: var(--main-light);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--main-navy);
+        line-height: 1.6;
+      }
+      .presentation-container {
+        max-width: 900px;
+        width: 96%;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(45, 55, 72, 0.07);
+        overflow: hidden;
+        position: relative;
+      }
+      .slide {
+        padding: 60px 40px;
+        min-height: 600px;
+        display: none;
+        animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+      .slide.active {
+        display: block;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .slide h1 {
+        font-size: 2.7rem;
+        font-weight: 700;
+        color: var(--main-navy);
+        margin-bottom: 36px;
+        text-align: center;
+        letter-spacing: -0.02em;
+      }
+      .slide h1 .main-icon {
+        font-size: 2.2rem;
+        color: var(--main-blue);
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+      .slide h2 {
+        font-size: 1.7rem;
+        font-weight: 600;
+        color: var(--main-navy);
+        margin-bottom: 28px;
+        border-left: 5px solid var(--main-blue);
+        padding-left: 16px;
+        background: none;
+      }
+      .slide h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--main-navy);
+        margin-bottom: 16px;
+      }
+      .slide p,
+      .slide li {
+        font-size: 1.05rem;
+        color: var(--main-navy);
+        margin-bottom: 12px;
+        font-weight: 400;
+      }
+      .slide ul {
+        margin-left: 18px;
+        margin-bottom: 18px;
+      }
+      .slide li {
+        margin-bottom: 8px;
+        position: relative;
+        padding-left: 0;
+        list-style: disc inside;
+      }
+      .highlight {
+        background: var(--main-light);
+        padding: 22px 24px;
+        border-radius: 8px;
+        margin: 22px 0;
+        border-left: 4px solid var(--main-blue);
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin: 28px 0;
+      }
+      .stat-card {
+        background: #fff;
+        color: var(--main-navy);
+        padding: 22px 16px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1.5px solid var(--main-light);
+        font-weight: 500;
+      }
+      .stat-card strong {
+        color: var(--main-blue);
+        font-size: 1.2rem;
+      }
+      .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 40px;
+        background: var(--main-light);
+        border-top: 1px solid #e2e8f0;
+      }
+      .nav-btn {
+        padding: 10px 22px;
+        background: var(--main-blue);
+        color: white;
+        border: none;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .nav-btn:hover {
+        background: #4953b8;
+      }
+      .nav-btn:disabled {
+        background: #cbd5e0;
+        cursor: not-allowed;
+      }
+      .slide-counter {
+        font-size: 1.05rem;
+        color: var(--main-navy);
+        font-weight: 600;
+        background: #fff;
+        padding: 6px 14px;
+        border-radius: 16px;
+        border: 1px solid var(--main-light);
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin: 28px 0;
+      }
+      .feature-card {
+        background: #fff;
+        padding: 18px 14px;
+        border-radius: 8px;
+        text-align: left;
+        border: 1.5px solid var(--main-light);
+        font-size: 1rem;
+      }
+      .feature-card h3 {
+        color: var(--main-blue);
+        font-size: 1.08rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .feature-card p {
+        color: var(--main-navy);
+        font-size: 0.98rem;
+        line-height: 1.5;
+      }
+      .implementation-timeline {
+        background: var(--main-light);
+        padding: 24px 18px;
+        border-radius: 8px;
+        margin: 28px 0;
+        border-left: 4px solid var(--main-blue);
+      }
+      .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 18px;
+      }
+      .timeline-number {
+        color: var(--main-blue);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-right: 16px;
+        min-width: 28px;
+      }
+      .timeline-item h4 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--main-navy);
+        margin-bottom: 4px;
+      }
+      .timeline-item p {
+        color: var(--main-navy);
+        font-size: 0.98rem;
+      }
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin: 28px 0;
+      }
+      .comparison-card {
+        background: #fff;
+        padding: 18px 14px;
+        border-radius: 8px;
+        border: 1.5px solid var(--main-light);
+      }
+      .comparison-card h3 {
+        color: var(--main-blue);
+        font-size: 1.08rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .comparison-card ul {
+        color: var(--main-navy);
+        font-size: 0.98rem;
+      }
+      .final-cta {
+        text-align: center;
+        margin-top: 36px;
+        padding: 28px 0;
+        background: var(--main-blue);
+        border-radius: 8px;
+        color: white;
+      }
+      .final-cta h3 {
+        margin-bottom: 12px;
+        font-size: 1.25rem;
+        color: white;
+      }
+      .final-cta p {
+        font-size: 1.05rem;
+        color: white;
+        opacity: 0.95;
+      }
+      @media (max-width: 768px) {
+        .slide {
+          padding: 28px 8px;
+          min-height: 400px;
+        }
+        .slide h1 {
+          font-size: 1.5rem;
+        }
+        .slide h2 {
+          font-size: 1.1rem;
+        }
+        .stats-grid,
+        .feature-grid,
+        .comparison-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="presentation-container">
+      <!-- 슬라이드 1: 타이틀 -->
+      <div class="slide active title-slide">
+        <h1
+          style="
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+          "
+        >
+          <span
+            style="
+              color: var(--main-blue);
+              font-size: 2.7rem;
+              font-weight: 900;
+              letter-spacing: 0.01em;
+            "
+            >KoreaMate</span
+          >
+        </h1>
+        <div
+          class="subtitle"
+          style="
+            font-size: 1.25rem;
+            color: var(--main-navy);
+            opacity: 0.85;
+            margin-bottom: 18px;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+          "
+        >
+          너에게 딱 맞는 한국의 도시를 소개할게
+        </div>
+        <div style="text-align: center; margin-bottom: 18px">
+          <span
+            style="
+              color: var(--main-blue);
+              font-size: 1.08rem;
+              font-weight: 600;
+            "
+          >
+            "한국의 진짜 문화를 경험하고 싶었지만, 정보가 부족해 아쉬웠다.
+            KoreaMate를 통해 해결!"</span
+          >
+        </div>
+        <div class="highlight" style="text-align: center">
+          <p style="font-size: 1.08rem"><strong>KDT 해커톤 기획서</strong></p>
+          <p style="font-size: 1.02rem">
+            지역 균형 발전을 위한 디지털 사회서비스
+          </p>
+        </div>
+      </div>
+      <!-- 슬라이드 2: 문제 인식 -->
+      <div class="slide">
+        <h2>문제 인식</h2>
+        <div class="highlight">
+          <h3>여행자 관점의 Pain Point</h3>
+          <p>
+            <strong
+              >"진짜 그 나라의 문화를 보고 싶은데, 지역축제 정보를 찾기
+              어렵다!"</strong
+            >
+          </p>
+        </div>
+        <ul>
+          <li>외국인 관광객: 지역축제 정보 접근이 매우 어려움</li>
+          <li>현지 정보 접근성 부족</li>
+          <li>기존 관광 정보: 고정된 명소 위주, 축제 정보는 부족</li>
+          <li>
+            관광객 집중: 서울/부산/제주에 편중, 지방 소외
+            <span style="color: var(--main-blue); font-size: 0.98em"
+              >(전체 외국인 관광객의 80% 이상,
+              <a
+                href="https://kto.visitkorea.or.kr/kor/notice/data/statis.kto"
+                target="_blank"
+                style="color: var(--main-blue); text-decoration: underline"
+                >KTO 2023</a
+              >)</span
+            >
+          </li>
+        </ul>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong>3개 도시</strong><br />관광객 집중(서울/부산/제주)
+          </div>
+          <div class="stat-card">
+            <strong>0개</strong><br />외국인 대상 지역축제 플랫폼
+          </div>
+        </div>
+        <div class="highlight" style="margin-top: 18px">
+          <table
+            style="width: 100%; border-collapse: collapse; font-size: 1rem"
+          >
+            <thead>
+              <tr style="background: #f5f7fa; color: var(--main-blue)">
+                <th
+                  style="
+                    padding: 7px 4px;
+                    border-bottom: 1.5px solid #e2e8f0;
+                    text-align: left;
+                  "
+                >
+                  지표
+                </th>
+                <th
+                  style="
+                    padding: 7px 4px;
+                    border-bottom: 1.5px solid #e2e8f0;
+                    text-align: left;
+                  "
+                >
+                  수치
+                </th>
+                <th
+                  style="
+                    padding: 7px 4px;
+                    border-bottom: 1.5px solid #e2e8f0;
+                    text-align: left;
+                  "
+                >
+                  출처
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  축제 방문객 증가율
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  +20%
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  <a
+                    href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
+                    target="_blank"
+                    style="color: var(--main-blue); text-decoration: underline"
+                    >한국관광공사</a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  외국인 참여 증가 사례
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  +143%~+288%
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  매일경제
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  고양꽃박람회 방문자
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  55만명
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  공식 축제자료
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  단오제 방문자
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  62만명
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  유네스코·문화재청
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  경제 효과
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  축제당 85억 원
+                </td>
+                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
+                  <a
+                    href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
+                    target="_blank"
+                    style="color: var(--main-blue); text-decoration: underline"
+                    >한국관광공사</a
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="font-size: 0.92rem; color: #888; margin-top: 8px">
+            ※ 출처:
+            <a
+              href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
+              target="_blank"
+              style="color: var(--main-blue); text-decoration: underline"
+              >한국관광공사</a
+            >, 매일경제, 공식 축제자료, 유네스코·문화재청 등<br />
+            <a
+              href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
+              target="_blank"
+              style="color: var(--main-blue); text-decoration: underline"
+              >knto.or.kr</a
+            >,
+            <a
+              href="https://datalab.visitkorea.or.kr"
+              target="_blank"
+              style="color: var(--main-blue); text-decoration: underline"
+              >datalab.visitkorea.or.kr</a
+            >,
+            <a
+              href="https://www.mk.co.kr/"
+              target="_blank"
+              style="color: var(--main-blue); text-decoration: underline"
+              >mk.co.kr</a
+            >,
+            <a
+              href="https://en.wikipedia.org/wiki/List_of_festivals_in_South_Korea"
+              target="_blank"
+              style="color: var(--main-blue); text-decoration: underline"
+              >en.wikipedia.org</a
+            >
+          </div>
+        </div>
+        <div class="highlight" style="margin-top: 18px; background: #f7faff">
+          <strong style="color: var(--main-blue); font-size: 1.08rem"
+            >외국인 유치→지방경제→인프라→청년정착→지속 균형발전 선순환
+            구조</strong
+          >
+        </div>
+      </div>
+      <!-- 슬라이드 3: 아이디어 개요 -->
+      <div class="slide">
+        <h2>아이디어 개요</h2>
+        <div class="highlight">
+          <h3>KoreaMate</h3>
+          <p><strong>외국인 관광객을 위한 한국 지역축제 통합 플랫폼</strong></p>
+          <p>실시간 축제 정보, 지역 문화 체험, 커뮤니티 기능 제공</p>
+        </div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>실시간 축제 정보</h3>
+            <p>전국 지역축제 일정 실시간 업데이트</p>
+          </div>
+          <div class="feature-card">
+            <h3>다국어 지원</h3>
+            <p>영어, 중국어, 일본어 등 주요 언어 지원</p>
+          </div>
+          <div class="feature-card">
+            <h3>위치 기반 추천</h3>
+            <p>현재 위치 근처 축제 정보 자동 제공</p>
+          </div>
+          <div class="feature-card">
+            <h3>커뮤니티</h3>
+            <p>후기 공유, 동행 찾기, 현지인과 소통</p>
+          </div>
+        </div>
+      </div>
+      <!-- 슬라이드 4: MVP 핵심 기능 (AI) -->
+      <div class="slide">
+        <h2>MVP 핵심 기능 (AI)</h2>
+        <div class="highlight" style="margin-bottom: 18px; background: #f7faff">
+          <strong style="color: var(--main-blue); font-size: 1.08rem"
+            >국내외 유일 AI 추천·챗봇·감성분석 기반 지역축제 플랫폼</strong
+          >
+        </div>
+        <div class="feature-grid">
+          <div
+            class="feature-card"
+            style="border: 2px solid var(--main-blue); background: #f7faff"
+          >
+            <h3
+              style="
+                font-size: 1.15rem;
+                color: var(--main-blue);
+                font-weight: 800;
+              "
+            >
+              AI 축제 추천 매칭 테스트
+              <span
+                style="
+                  background: var(--main-blue);
+                  color: #fff;
+                  font-size: 0.85rem;
+                  padding: 2px 8px;
+                  border-radius: 8px;
+                  margin-left: 6px;
+                  vertical-align: middle;
+                "
+                >MVP</span
+              >
+            </h3>
+            <p>
+              <strong
+                >여행 스타일, 취향, 성격(MBTI 등) 기반<br />어울리는 지역 축제
+                매칭</strong
+              >
+            </p>
+            <ul>
+              <li>단순 리스트가 아닌 감성적 몰입 + 퍼스널화</li>
+            </ul>
+            <p style="font-size: 0.97rem; color: #888">
+              <span
+                style="
+                  background: #e2e8f0;
+                  border-radius: 8px;
+                  padding: 2px 8px;
+                  margin-right: 4px;
+                "
+                >💬 예시:</span
+              >당신은 '슬로우 라이프형 여행자' → 남해 바다마을 축제가 잘
+              어울려요!
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              AI 축제 요약 & 현지화 설명 챗봇
+              <span
+                style="
+                  background: #e2e8f0;
+                  color: var(--main-blue);
+                  font-size: 0.8rem;
+                  padding: 2px 7px;
+                  border-radius: 7px;
+                  margin-left: 5px;
+                  vertical-align: middle;
+                "
+                >+ 확장 기능</span
+              >
+            </h3>
+            <p>
+              <strong
+                >GPT 기반 챗봇이 외국인의 언어로 축제 설명 + 맥락 안내</strong
+              >
+            </p>
+            <ul>
+              <li>문화적 배경까지 고려한 설명, 실질적 이해도 상승</li>
+            </ul>
+            <p style="font-size: 0.97rem; color: #888">
+              <span
+                style="
+                  background: #e2e8f0;
+                  border-radius: 8px;
+                  padding: 2px 8px;
+                  margin-right: 4px;
+                "
+                >💬 예시:</span
+              >This festival is similar to Halloween but rooted in Korean
+              ancestor worship culture (Chuseok)
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              AI 기반 여행 경로 자동 설계
+              <span
+                style="
+                  background: #e2e8f0;
+                  color: var(--main-blue);
+                  font-size: 0.8rem;
+                  padding: 2px 7px;
+                  border-radius: 7px;
+                  margin-left: 5px;
+                  vertical-align: middle;
+                "
+                >+ 확장 기능</span
+              >
+            </h3>
+            <p>
+              <strong>위치, 일정, 예산 입력 → 최적 여행 코스 자동 생성</strong>
+            </p>
+            <ul>
+              <li>축제+명소+음식점+교통까지 포함, 지역 간 이동 유도</li>
+            </ul>
+            <p style="font-size: 0.97rem; color: #888">
+              <span
+                style="
+                  background: #e2e8f0;
+                  border-radius: 8px;
+                  padding: 2px 8px;
+                  margin-right: 4px;
+                "
+                >💬 예시:</span
+              >3박 4일 전라도 축제 여행 코스 자동 생성
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              AI 축제 후기 자동 요약/감성 분석
+              <span
+                style="
+                  background: #e2e8f0;
+                  color: var(--main-blue);
+                  font-size: 0.8rem;
+                  padding: 2px 7px;
+                  border-radius: 7px;
+                  margin-left: 5px;
+                  vertical-align: middle;
+                "
+                >+ 확장 기능</span
+              >
+            </h3>
+            <p>
+              <strong
+                >참가자 후기/사진/영상 → AI가 다국어 요약, 감성 분석</strong
+              >
+            </p>
+            <ul>
+              <li>언어 장벽 없이 '느낌'을 전달, 참여 동기 부여</li>
+            </ul>
+            <p style="font-size: 0.97rem; color: #888">
+              <span
+                style="
+                  background: #e2e8f0;
+                  border-radius: 8px;
+                  padding: 2px 8px;
+                  margin-right: 4px;
+                "
+                >💬 예시:</span
+              >활기차다, 로컬 커뮤니티 중심, 힐링
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              AI 지역문화 비교 툴
+              <span
+                style="
+                  background: #e2e8f0;
+                  color: var(--main-blue);
+                  font-size: 0.8rem;
+                  padding: 2px 7px;
+                  border-radius: 7px;
+                  margin-left: 5px;
+                  vertical-align: middle;
+                "
+                >+ 확장 기능</span
+              >
+            </h3>
+            <p><strong>자국 문화와 비교해 해당 축제를 설명</strong></p>
+            <ul>
+              <li>문화적 낯섦 극복, 실질적 이해도 향상</li>
+            </ul>
+            <p style="font-size: 0.97rem; color: #888">
+              <span
+                style="
+                  background: #e2e8f0;
+                  border-radius: 8px;
+                  padding: 2px 8px;
+                  margin-right: 4px;
+                "
+                >💬 예시:</span
+              >이 축제는 일본의 마츠리와 유사하지만, 한국 전통 무용과 퍼포먼스가
+              중심입니다.
+            </p>
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 18px;
+            color: #666;
+            font-size: 0.98rem;
+            text-align: right;
+          "
+        >
+          ※ 챗GPT API로 요약/추천 기능만 빠르게 PoC 형태로 구현 예정
+        </div>
+      </div>
+      <!-- 슬라이드 5: 차별성 -->
+      <div class="slide">
+        <h2>핵심 차별성</h2>
+        <div class="highlight">
+          <h3>기존 서비스와의 차별점</h3>
+        </div>
+        <div class="comparison-grid">
+          <div class="comparison-card">
+            <h3>기존 서비스</h3>
+            <ul>
+              <li>관광명소 위주 정보</li>
+              <li>한국어 중심</li>
+              <li>정적인 정보</li>
+              <li>서울/부산/제주 집중</li>
+              <li>일방향 정보 제공</li>
+            </ul>
+          </div>
+          <div class="comparison-card">
+            <h3>KoreaMate</h3>
+            <ul>
+              <li>지역축제 전문 플랫폼</li>
+              <li>외국인 타겟, 다국어 지원</li>
+              <li>실시간 정보 업데이트</li>
+              <li>전국 지역 균형 커버</li>
+              <li>양방향 커뮤니티</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- 슬라이드 6: 기대 효과 -->
+      <div class="slide">
+        <h2>기대 효과</h2>
+        <div class="highlight">
+          <h3>지역균형발전 선순환 구조</h3>
+          <p>외국인 → 지방 축제 → 지역 활성화 → 인프라 개선 → 지역 발전</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong>+20%</strong><br />축제 방문객 증가<br /><span
+              style="font-size: 0.95em; color: #888"
+              >(<a
+                href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
+                target="_blank"
+                style="color: var(--main-blue); text-decoration: underline"
+                >한국관광공사</a
+              >)</span
+            >
+          </div>
+          <div class="stat-card">
+            <strong>+143~288%</strong><br />외국인 축제 참여 증가<br /><span
+              style="font-size: 0.95em; color: #888"
+              >(매일경제)</span
+            >
+          </div>
+          <div class="stat-card">
+            <strong>85억 원</strong><br />축제 1건당 경제효과<br /><span
+              style="font-size: 0.95em; color: #888"
+              >(<a
+                href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
+                target="_blank"
+                style="color: var(--main-blue); text-decoration: underline"
+                >한국관광공사</a
+              >)</span
+            >
+          </div>
+          <div class="stat-card">
+            <strong>55~62만명</strong><br />주요 축제 방문자 수<br /><span
+              style="font-size: 0.95em; color: #888"
+              >(공식자료)</span
+            >
+          </div>
+        </div>
+        <div class="highlight" style="margin-top: 18px">
+          <strong style="color: var(--main-blue); font-size: 1.08rem"
+            >1년 내 방문객 +10%, 지역소비 +15% 목표</strong
+          ><br />
+          <span style="color: #666; font-size: 0.98rem"
+            >지자체-관광거점도시 육성사업 등 정책 연계, 지역청년/로컬크리에이터
+            참여 구조로 지속성 확보</span
+          >
+        </div>
+        <div class="highlight" style="margin-top: 18px; background: #f7faff">
+          <strong style="color: var(--main-blue); font-size: 1.08rem"
+            >외국인 유치→지방경제→인프라→청년정착→지속 균형발전 선순환
+            구조</strong
+          >
+        </div>
+        <div class="implementation-timeline">
+          <div class="timeline-item">
+            <div class="timeline-number">1</div>
+            <div>
+              <h4>지방 관광객 유입 증가</h4>
+              <p>서울/부산/제주 외 지역으로 관광객 분산</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-number">2</div>
+            <div>
+              <h4>지역 경제 활성화</h4>
+              <p>숙박, 음식, 쇼핑 등 지역 소비 증가</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-number">3</div>
+            <div>
+              <h4>지역 인프라 개선</h4>
+              <p>관광 인프라, 교통, 편의시설 확충</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-number">4</div>
+            <div>
+              <h4>지속 가능한 발전</h4>
+              <p>지역 브랜드 가치 상승, 청년 유입</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 슬라이드 8: 리스크 및 대응 -->
+      <div class="slide">
+        <h2>리스크 및 대응</h2>
+        <div class="highlight" style="padding: 18px 12px">
+          <table
+            style="width: 100%; border-collapse: collapse; font-size: 1rem"
+          >
+            <thead>
+              <tr style="background: #f5f7fa; color: var(--main-blue)">
+                <th
+                  style="
+                    padding: 8px 4px;
+                    border-bottom: 1.5px solid #e2e8f0;
+                    text-align: left;
+                  "
+                >
+                  리스크
+                </th>
+                <th
+                  style="
+                    padding: 8px 4px;
+                    border-bottom: 1.5px solid #e2e8f0;
+                    text-align: left;
+                  "
+                >
+                  대응책
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
+                  공공 데이터 부족/부정확
+                </td>
+                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
+                  지자체/관광공사 협력, 크롤링 등 보완
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
+                  다국어 번역 품질
+                </td>
+                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
+                  AI 번역 + 팀 내 검수, 현지인 피드백
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
+                  축제 정보 실시간성
+                </td>
+                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
+                  주기적 데이터 동기화, 사용자 제보 반영
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- 슬라이드 9: 유통/홍보 아이디어 -->
+      <div class="slide">
+        <h2>유통/홍보 전략</h2>
+        <div class="highlight">
+          <h3>실현 가능한 유통 전략</h3>
+        </div>
+        <h3
+          style="
+            font-size: 1.05rem;
+            color: var(--main-blue);
+            margin-bottom: 8px;
+          "
+        >
+          공항 진입점 활용
+        </h3>
+        <ul>
+          <li>인천공항 관광브로셔 QR코드</li>
+          <li>공항 WiFi 연결 시 랜딩페이지 노출</li>
+          <li>입국 심사 대기 디지털 사이니지</li>
+        </ul>
+        <div style="font-size: 0.98rem; color: #666; margin-bottom: 8px">
+          실제 인천공항 면세점/여행자보험 앱도 QR코드로 홍보 중(2023)
+        </div>
+        <h3
+          style="
+            font-size: 1.05rem;
+            color: var(--main-blue);
+            margin-bottom: 8px;
+          "
+        >
+          파트너십 전략
+        </h3>
+        <ul>
+          <li>한국관광공사: 공식 파트너십, 데이터 협력</li>
+          <li>지자체: 축제 정보 제공, 홍보 지원</li>
+          <li>호스텔/게스트하우스: 외국인 여행자 타겟</li>
+          <li>대학교 국제처: 교환학생 홍보</li>
+        </ul>
+        <div style="font-size: 0.98rem; color: #666; margin-top: 8px">
+          지자체-관광거점도시 육성사업 등 정책 연계, 지역청년/로컬크리에이터
+          참여 구조로 확장 가능
+        </div>
+      </div>
+      <!-- 심사기준별 자기점검 슬라이드 -->
+      <div class="slide">
+        <h2>심사기준별 자기점검</h2>
+        <div
+          class="stats-grid"
+          style="margin-bottom: 18px; grid-template-columns: 1fr 1fr"
+        >
+          <div
+            class="stat-card"
+            style="border-left: 6px solid var(--main-blue); text-align: left"
+          >
+            <h3
+              style="
+                font-size: 1.15rem;
+                color: var(--main-blue);
+                font-weight: 700;
+                margin-bottom: 8px;
+              "
+            >
+              적합성
+              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
+                >(20점 만점)</span
+              >
+            </h3>
+            <div
+              style="
+                font-size: 1.08rem;
+                color: var(--main-blue);
+                font-weight: 700;
+                margin-bottom: 4px;
+              "
+            >
+              예상: 16~18점
+            </div>
+            <ul style="font-size: 1.02rem; margin-left: 0">
+              <li>
+                외국인 유치→지방경제→인프라→청년정착→지속 균형발전 선순환 구조
+              </li>
+              <li>정책(관광거점도시 육성사업 등)과 연계 가능</li>
+            </ul>
+          </div>
+          <div
+            class="stat-card"
+            style="border-left: 6px solid #6c63ff; text-align: left"
+          >
+            <h3
+              style="
+                font-size: 1.15rem;
+                color: #6c63ff;
+                font-weight: 700;
+                margin-bottom: 8px;
+              "
+            >
+              창의성
+              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
+                >(30점 만점)</span
+              >
+            </h3>
+            <div
+              style="
+                font-size: 1.08rem;
+                color: #6c63ff;
+                font-weight: 700;
+                margin-bottom: 4px;
+              "
+            >
+              예상: 26~30점
+            </div>
+            <ul style="font-size: 1.02rem; margin-left: 0">
+              <li>국내외 유일 AI 추천·챗봇·감성분석 기반 지역축제 플랫폼</li>
+              <li>외국인 타겟, 다국어 커뮤니티 등 창의성 최고 수준</li>
+            </ul>
+          </div>
+          <div
+            class="stat-card"
+            style="border-left: 6px solid #00b894; text-align: left"
+          >
+            <h3
+              style="
+                font-size: 1.15rem;
+                color: #00b894;
+                font-weight: 700;
+                margin-bottom: 8px;
+              "
+            >
+              구현가능성
+              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
+                >(30점 만점)</span
+              >
+            </h3>
+            <div
+              style="
+                font-size: 1.08rem;
+                color: #00b894;
+                font-weight: 700;
+                margin-bottom: 4px;
+              "
+            >
+              예상: 24~27점
+            </div>
+            <ul style="font-size: 1.02rem; margin-left: 0">
+              <li>GPT API 기반 요약/추천 PoC로 MVP</li>
+              <li>데이터 확보는 공공+지자체 협력</li>
+            </ul>
+          </div>
+          <div
+            class="stat-card"
+            style="border-left: 6px solid #fdcb6e; text-align: left"
+          >
+            <h3
+              style="
+                font-size: 1.15rem;
+                color: #fdcb6e;
+                font-weight: 700;
+                margin-bottom: 8px;
+              "
+            >
+              기대효과
+              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
+                >(20점 만점)</span
+              >
+            </h3>
+            <div
+              style="
+                font-size: 1.08rem;
+                color: #fdcb6e;
+                font-weight: 700;
+                margin-bottom: 4px;
+              "
+            >
+              예상: 14~17점
+            </div>
+            <ul style="font-size: 1.02rem; margin-left: 0">
+              <li>1년 내 방문객 10%↑, 소비 15%↑</li>
+              <li>인프라 개선→청년 유입→지속성 확보</li>
+            </ul>
+          </div>
+        </div>
+        <div class="highlight" style="margin-top: 8px">
+          <span style="color: #888; font-size: 0.98rem"
+            >※ 보완: 지역청년/로컬크리에이터 참여, 정책/기관 협력 구조
+            구체화</span
+          >
+        </div>
+        <div
+          class="highlight"
+          style="
+            margin-top: 24px;
+            background: #f7faff;
+            border-radius: 12px;
+            padding: 18px 20px 12px 20px;
+            box-shadow: 0 2px 8px 0 #e7ecf3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
+          <div
+            style="
+              font-size: 1.08rem;
+              color: var(--main-blue);
+              font-weight: 700;
+              margin-bottom: 10px;
+              letter-spacing: 0.5px;
+            "
+          >
+            참가자
+          </div>
+          <div style="display: flex; gap: 12px; margin-bottom: 6px">
+            <span
+              style="
+                background: #e3eaf6;
+                color: #234;
+                font-weight: 600;
+                border-radius: 16px;
+                padding: 6px 18px;
+                font-size: 1.07rem;
+              "
+              >김대화</span
+            >
+            <span
+              style="
+                background: #e3eaf6;
+                color: #234;
+                font-weight: 600;
+                border-radius: 16px;
+                padding: 6px 18px;
+                font-size: 1.07rem;
+              "
+              >김현정</span
+            >
+            <span
+              style="
+                background: #e3eaf6;
+                color: #234;
+                font-weight: 600;
+                border-radius: 16px;
+                padding: 6px 18px;
+                font-size: 1.07rem;
+              "
+              >홍우진</span
+            >
+          </div>
+          <div style="font-size: 0.98rem; color: #666; margin-top: 2px">
+            3인 팀, 기획/프론트/백엔드 전담 (주 스킬: 백엔드)
+          </div>
+        </div>
+      </div>
+      <!-- 슬라이드 10: 요약 -->
+      <div class="slide">
+        <h2>요약</h2>
+        <div class="highlight">
+          <h3>KoreaMate가 만드는 변화</h3>
+          <p>
+            <strong>"외국인 관광객이 한국의 진짜 모습을 발견하게 하자"</strong>
+          </p>
+        </div>
+        <div class="comparison-grid">
+          <div>
+            <h3>핵심 가치</h3>
+            <ul>
+              <li>외국인 특화 서비스</li>
+              <li>지역축제 전문 플랫폼</li>
+              <li>실시간 정보 업데이트</li>
+              <li>문화적 맥락 제공</li>
+            </ul>
+          </div>
+          <div>
+            <h3>기대 효과</h3>
+            <ul>
+              <li>지방 관광객 유입 증가</li>
+              <li>지역 경제 활성화</li>
+              <li>인프라 개선 및 발전</li>
+              <li>지역균형발전 기여</li>
+            </ul>
+          </div>
+        </div>
+        <div class="final-cta" style="margin-top: 30px">
+          <h3>함께 만들어가요!</h3>
+          <p>혁신적인 아이디어 + 팀워크 = 성공적인 해커톤</p>
+        </div>
+      </div>
+      <!-- 네비게이션 -->
+      <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+          이전
+        </button>
+        <span class="slide-counter">
+          <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
+        </span>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+          다음
+        </button>
+      </div>
+    </div>
+    <script>
+      let currentSlideIndex = 0;
+      const slides = document.querySelectorAll(".slide");
+      const totalSlides = slides.length;
+      function showSlide(index) {
+        slides.forEach((slide) => slide.classList.remove("active"));
+        slides[index].classList.add("active");
+        document.getElementById("currentSlide").textContent = index + 1;
+        document.getElementById("totalSlides").textContent = totalSlides;
+        document.getElementById("prevBtn").disabled = index === 0;
+        document.getElementById("nextBtn").disabled = index === totalSlides - 1;
+      }
+      function changeSlide(direction) {
+        currentSlideIndex += direction;
+        if (currentSlideIndex < 0) currentSlideIndex = 0;
+        if (currentSlideIndex >= totalSlides)
+          currentSlideIndex = totalSlides - 1;
+        showSlide(currentSlideIndex);
+      }
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") changeSlide(1);
+        if (e.key === "ArrowLeft") changeSlide(-1);
+      });
+      showSlide(0);
+    </script>
+  </body>
+</html>
