@@ -2,1251 +2,1467 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KDT 해커톤 기획서 - 지역축제 플랫폼</title>
+    <meta
+      name="viewport"
+      content="width=390, initial-scale=1.0, user-scalable=no"
+    />
+    <title>KoreaMate 모바일 프로토타입</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
       :root {
-        --main-navy: #2d3748;
-        --main-blue: #667eea;
-        --main-light: #f5f7fa;
+        --main-blue: #5a7cff;
+        --main-navy: #2c3e50;
+        --main-gray: #6c757d;
+        --main-light: #f8faff;
+        --main-bg-blur: rgba(248, 250, 255, 0.95);
+        --main-shadow: 0 2px 12px 0 #e3eaf6;
+        --main-green: #00b894;
+        --main-yellow: #ffe066;
+        --main-pink: #ffb6b6;
       }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      html,
+      body {
+        height: 100%;
+        background: var(--main-light);
       }
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        background: var(--main-light);
-        min-height: 100vh;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial, sans-serif;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--main-navy);
-        line-height: 1.6;
+        min-height: 100vh;
+        background: var(--main-light);
       }
-      .presentation-container {
-        max-width: 900px;
-        width: 96%;
-        background: white;
-        border-radius: 14px;
-        box-shadow: 0 8px 32px rgba(45, 55, 72, 0.07);
+      .iphone-frame {
+        width: 400px;
+        height: min(800px, 100vh);
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 40px 0 rgba(44, 62, 80, 0.18);
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border: 2.5px solid #e3eaf6;
         position: relative;
+        background: var(--main-light);
       }
-      .slide {
-        padding: 60px 40px;
-        min-height: 600px;
+      .app-header {
+        height: 60px;
+        background: var(--main-bg-blur);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        color: var(--main-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        font-weight: 900;
+        letter-spacing: -0.01em;
+        border-bottom: 1.5px solid #e3eaf6;
+        box-shadow: 0 2px 12px 0 #e3eaf6;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .app-header::before {
+        content: "";
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background: url("https://cdn-icons-png.flaticon.com/512/854/854878.png")
+          no-repeat center/cover;
+        margin-right: 10px;
+        vertical-align: middle;
+        opacity: 0.85;
+      }
+      .slide-area {
+        flex: 1 1 0%;
+        height: calc(100% - 134px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: var(--main-light);
+        padding: 0 0 0 0;
+        position: relative;
+        scroll-behavior: smooth;
+      }
+      .tab-content {
+        min-height: 100%;
+        padding: 32px 14px 18px 14px;
         display: none;
-        animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
+        flex-direction: column;
+        justify-content: flex-start;
+        animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .slide.active {
-        display: block;
+      .tab-content.active {
+        display: flex;
       }
-      @keyframes slideIn {
+      @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(24px);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
-      .slide h1 {
-        font-size: 2.7rem;
-        font-weight: 700;
-        color: var(--main-navy);
-        margin-bottom: 36px;
-        text-align: center;
-        letter-spacing: -0.02em;
-      }
-      .slide h1 .main-icon {
-        font-size: 2.2rem;
+      .section-title {
+        font-size: 1.22rem;
+        font-weight: 900;
         color: var(--main-blue);
-        vertical-align: middle;
-        margin-right: 10px;
-      }
-      .slide h2 {
-        font-size: 1.7rem;
-        font-weight: 600;
-        color: var(--main-navy);
-        margin-bottom: 28px;
-        border-left: 5px solid var(--main-blue);
-        padding-left: 16px;
-        background: none;
-      }
-      .slide h3 {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--main-navy);
-        margin-bottom: 16px;
-      }
-      .slide p,
-      .slide li {
-        font-size: 1.05rem;
-        color: var(--main-navy);
-        margin-bottom: 12px;
-        font-weight: 400;
-      }
-      .slide ul {
-        margin-left: 18px;
         margin-bottom: 18px;
+        letter-spacing: -0.01em;
+        padding-left: 2px;
       }
-      .slide li {
-        margin-bottom: 8px;
-        position: relative;
-        padding-left: 0;
-        list-style: disc inside;
-      }
-      .highlight {
-        background: var(--main-light);
-        padding: 22px 24px;
-        border-radius: 8px;
-        margin: 22px 0;
-        border-left: 4px solid var(--main-blue);
-      }
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 18px;
-        margin: 28px 0;
-      }
-      .stat-card {
-        background: #fff;
-        color: var(--main-navy);
-        padding: 22px 16px;
-        border-radius: 8px;
-        text-align: center;
-        border: 1.5px solid var(--main-light);
-        font-weight: 500;
-      }
-      .stat-card strong {
-        color: var(--main-blue);
-        font-size: 1.2rem;
-      }
-      .navigation {
+      .feature-card,
+      .ugc-card,
+      .reward-card,
+      .feed-card {
+        background: #fff !important;
+        border-radius: 22px;
+        box-shadow: var(--main-shadow);
+        padding: 22px 18px 18px 18px;
+        margin-bottom: 18px;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 18px 40px;
-        background: var(--main-light);
-        border-top: 1px solid #e2e8f0;
+        flex-direction: column;
+        gap: 8px;
+        border: none;
+        transition: box-shadow 0.2s, transform 0.2s;
       }
-      .nav-btn {
-        padding: 10px 22px;
+      .feature-card:hover,
+      .ugc-card:hover,
+      .reward-card:hover,
+      .feed-card:hover {
+        box-shadow: 0 8px 32px 0 #b3d8ff44;
+        transform: translateY(-2px) scale(1.02);
+      }
+      .feature-card h3,
+      .ugc-card h3 {
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: var(--main-blue);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .feature-card h3::before {
+        content: "🌟";
+        font-size: 1.1rem;
+        margin-right: 2px;
+        opacity: 0.7;
+      }
+      .feature-card p,
+      .ugc-card p,
+      .reward-card p,
+      .feed-card p {
+        font-size: 0.99rem;
+        color: #495057;
+        margin-bottom: 0;
+        line-height: 1.7;
+      }
+      .input-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+        align-items: center;
+        background: #f7faff;
+        border-radius: 12px;
+        padding: 8px 10px;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+      }
+      .input-row label {
+        font-size: 1.01rem;
+        color: var(--main-blue);
+        font-weight: 700;
+        min-width: 60px;
+      }
+      .input-row input,
+      .input-row select {
+        flex: 1 1 0%;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: none;
+        font-size: 1.01rem;
+        background: #f7fafc;
+        color: #234;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+        outline: none;
+        transition: box-shadow 0.2s;
+      }
+      .input-row input:focus,
+      .input-row select:focus {
+        box-shadow: 0 2px 8px 0 #b3d8ff44;
+      }
+      .input-row input::placeholder {
+        color: #6c757d;
+      }
+      .btn {
+        background: var(--main-blue) !important;
+        color: #fff !important;
+        border: none;
+        border-radius: 14px;
+        padding: 12px 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 2px 8px 0 #b3d8ff44;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+        width: 100%;
+      }
+      .btn:active {
+        background: #3a6ed8;
+        transform: scale(0.98);
+      }
+      .recommend-cards {
+        display: flex;
+        gap: 14px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      .recommend-card {
+        background: linear-gradient(120deg, #e3f0ff 60%, #f7fafc 100%);
+        border-radius: 18px;
+        box-shadow: 0 2px 12px 0 #e3eaf6;
+        padding: 18px 14px;
+        min-width: 150px;
+        flex: 1 1 45%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        border: none;
+        transition: box-shadow 0.2s, transform 0.2s;
+      }
+      .recommend-card strong {
+        color: var(--main-blue);
+        font-size: 1.13rem;
+        margin-bottom: 4px;
+        font-weight: 900;
+      }
+      .recommend-card .tag {
+        color: #00b894;
+        font-size: 0.97rem;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+      .recommend-card .img {
+        width: 100%;
+        height: 80px;
+        border-radius: 12px;
+        object-fit: cover;
+        margin-bottom: 8px;
+        background: #e3eaf6;
+      }
+      .reward-gallery {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        margin-top: 8px;
+        padding-bottom: 4px;
+      }
+      .reward-card {
+        min-width: 120px;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(120deg, #e3f0ff 60%, #f7fafc 100%);
+        box-shadow: 0 2px 12px 0 #e3eaf6;
+        border-radius: 16px;
+        padding: 14px 8px 12px 8px;
+        margin-bottom: 0;
+        border: none;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .stamp-ring {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: conic-gradient(var(--main-blue) 0% 40%, #e3eaf6 40% 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px auto;
+        font-size: 1.25rem;
+        color: var(--main-blue);
+        font-weight: 800;
+        position: relative;
+        box-shadow: 0 2px 8px 0 #b3d8ff44;
+      }
+      .stamp-ring span {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        font-size: 1.1rem;
+        color: #234;
+        font-weight: 700;
+      }
+      .ugc-upload {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+        background: #f7faff;
+        border-radius: 14px;
+        padding: 12px 10px 8px 10px;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+      }
+      .ugc-upload input[type="file"] {
+        display: none;
+      }
+      .ugc-upload label {
+        background: #e3eaf6;
+        color: #234;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 0.98rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        margin-bottom: 4px;
+      }
+      .ugc-preview {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .ugc-preview img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1.2px solid #e3eaf6;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+      }
+      .hashtag-chip {
+        display: inline-block;
+        background: #e3eaf6;
+        color: var(--main-blue);
+        border-radius: 8px;
+        padding: 2px 10px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        margin-right: 4px;
+        margin-bottom: 2px;
+      }
+      .feed-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 8px;
+      }
+      .feed-card {
+        min-width: 150px;
+        background: linear-gradient(120deg, #e3f0ff 60%, #f7fafc 100%);
+        border-radius: 14px;
+        box-shadow: 0 2px 12px 0 #e3eaf6;
+        padding: 10px 8px 8px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 0;
+        border: none;
+        position: relative;
+        transition: box-shadow 0.2s, transform 0.2s;
+      }
+      .feed-card img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 4px;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+      }
+      .feed-card .feed-hashtags {
+        margin-bottom: 2px;
+      }
+      .feed-card .feed-comment {
+        font-size: 0.97rem;
+        color: #234;
+        margin-bottom: 2px;
+        font-weight: 600;
+      }
+      .feed-card .feed-btn {
+        background: var(--main-blue);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 2px;
+        box-shadow: 0 1px 4px 0 #b3d8ff44;
+        transition: background 0.2s, transform 0.2s;
+      }
+      .feed-card .feed-btn:active {
+        background: #3a6ed8;
+        transform: scale(0.97);
+      }
+      .feed-card .like-btn,
+      .feed-card .bookmark-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        color: #ffb6b6;
+        cursor: pointer;
+        margin-left: 4px;
+        transition: background 0.2s, transform 0.2s;
+      }
+      .feed-card .bookmark-btn {
+        right: 40px;
+        color: #4f8cff;
+      }
+      .feed-card .like-btn:active,
+      .feed-card .bookmark-btn:active {
+        background: #e3eaf6;
+        transform: scale(0.95);
+      }
+      .ia-diagram {
+        background: #f7faff;
+        border-radius: 16px;
+        padding: 18px 10px;
+        margin-top: 10px;
+        font-family: "Menlo", "Consolas", monospace;
+        font-size: 0.98rem;
+        color: #234;
+        white-space: pre;
+        overflow-x: auto;
+        box-shadow: 0 1px 6px 0 #e3eaf6;
+      }
+      .tab-bar {
+        height: 70px;
+        background: var(--main-bg-blur);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1.5px solid #e3eaf6;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        border-radius: 24px 24px 44px 44px;
+        box-shadow: 0 -2px 16px 0 #b3d8ff44;
+        position: relative;
+        width: 100%;
+        z-index: 20;
+        transition: box-shadow 0.2s;
+      }
+      .tab-btn {
+        flex: 1 1 0%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--main-navy);
+        font-size: 1.13rem;
+        font-weight: 700;
+        background: none;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.2s, transform 0.2s;
+        position: relative;
+      }
+      .tab-btn.active {
+        color: var(--main-blue);
+        transform: scale(1.12);
+      }
+      .tab-btn .icon {
+        font-size: 1.55rem;
+        margin-bottom: 2px;
+        filter: drop-shadow(0 1px 2px #e3eaf6);
+      }
+      @media (max-width: 430px) {
+        .iphone-frame {
+          width: 100vw;
+          height: 100vh;
+          border-radius: 0;
+        }
+        .tab-bar {
+          width: 96vw;
+          left: 2vw;
+          border-radius: 18px 18px 32px 32px;
+        }
+      }
+      /* Modal styles for 상세 보기 */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(44, 62, 80, 0.18);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal {
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: 0 8px 32px 0 #b3d8ff44;
+        padding: 28px 20px 20px 20px;
+        max-width: 340px;
+        width: 90vw;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        animation: fadeIn 0.3s;
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: #f7fafc;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 1.3rem;
+        color: #4f8cff;
+        cursor: pointer;
+        box-shadow: 0 1px 4px 0 #e3eaf6;
+      }
+      /* 메인화면 스타일 */
+      .search-container {
+        margin-bottom: 20px;
+      }
+      .search-bar {
+        display: flex;
+        align-items: center;
+        background: #f8faff;
+        border-radius: 16px;
+        padding: 12px 16px;
+        border: 1px solid #e3eaf6;
+        box-shadow: 0 2px 8px 0 #e3eaf6;
+      }
+      .search-icon {
+        font-size: 1.2rem;
+        margin-right: 12px;
+        color: var(--main-blue);
+      }
+      .search-input {
+        flex: 1;
+        border: none;
+        background: none;
+        font-size: 1rem;
+        color: var(--main-navy);
+        outline: none;
+      }
+      .search-input::placeholder {
+        color: #6c757d;
+      }
+
+      .festival-slider {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 4px 0;
+        margin-top: 12px;
+      }
+      .festival-card {
+        min-width: 200px;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px 0 #e3eaf6;
+        border: 1px solid #e3eaf6;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .festival-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px 0 #b3d8ff44;
+      }
+      .festival-card.featured {
+        border: 2px solid var(--main-blue);
+      }
+      .festival-image {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .festival-emoji {
+        font-size: 2rem;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+      .festival-info {
+        padding: 12px;
+      }
+      .festival-info h4 {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--main-navy);
+        margin: 0 0 4px 0;
+      }
+      .festival-info p {
+        font-size: 0.9rem;
+        color: #495057;
+        margin: 0 0 8px 0;
+      }
+      .festival-stats {
+        display: flex;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--main-blue);
+        font-weight: 700;
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .category-item {
+        background: linear-gradient(135deg, #f8faff 0%, #e3f0ff 100%);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+        border: 1px solid #e3eaf6;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+      }
+      .category-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px 0 #b3d8ff44;
+      }
+      .category-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .category-item span {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--main-navy);
+      }
+
+      .nearby-festival {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #e3f0ff 0%, #f8faff 100%);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 12px;
+        border: 1px solid #e3eaf6;
+      }
+      .nearby-info h4 {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--main-navy);
+        margin: 0 0 4px 0;
+      }
+      .nearby-info p {
+        font-size: 0.9rem;
+        color: #495057;
+        margin: 0 0 8px 0;
+      }
+      .nearby-stats {
+        display: flex;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--main-blue);
+        font-weight: 700;
+      }
+      .nearby-btn {
         background: var(--main-blue);
         color: white;
         border: none;
-        border-radius: 7px;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 700;
         cursor: pointer;
-        font-size: 1rem;
-        font-weight: 600;
         transition: background 0.2s;
       }
-      .nav-btn:hover {
-        background: #4953b8;
+      .nearby-btn:hover {
+        background: #3a6ed8;
       }
-      .nav-btn:disabled {
-        background: #cbd5e0;
-        cursor: not-allowed;
-      }
-      .slide-counter {
-        font-size: 1.05rem;
-        color: var(--main-navy);
-        font-weight: 600;
-        background: #fff;
-        padding: 6px 14px;
-        border-radius: 16px;
-        border: 1px solid var(--main-light);
-      }
-      .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 18px;
-        margin: 28px 0;
-      }
-      .feature-card {
-        background: #fff;
-        padding: 18px 14px;
-        border-radius: 8px;
-        text-align: left;
-        border: 1.5px solid var(--main-light);
-        font-size: 1rem;
-      }
-      .feature-card h3 {
-        color: var(--main-blue);
-        font-size: 1.08rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-      }
-      .feature-card p {
-        color: var(--main-navy);
-        font-size: 0.98rem;
-        line-height: 1.5;
-      }
-      .implementation-timeline {
-        background: var(--main-light);
-        padding: 24px 18px;
-        border-radius: 8px;
-        margin: 28px 0;
-        border-left: 4px solid var(--main-blue);
-      }
-      .timeline-item {
+
+      .ai-recommendation {
         display: flex;
         align-items: flex-start;
-        margin-bottom: 18px;
+        gap: 12px;
+        background: linear-gradient(135deg, #f0f4ff 0%, #e3f0ff 100%);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 12px;
+        border: 1px solid #e3eaf6;
       }
-      .timeline-number {
-        color: var(--main-blue);
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin-right: 16px;
-        min-width: 28px;
-      }
-      .timeline-item h4 {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: var(--main-navy);
-        margin-bottom: 4px;
-      }
-      .timeline-item p {
-        color: var(--main-navy);
-        font-size: 0.98rem;
-      }
-      .comparison-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 18px;
-        margin: 28px 0;
-      }
-      .comparison-card {
-        background: #fff;
-        padding: 18px 14px;
-        border-radius: 8px;
-        border: 1.5px solid var(--main-light);
-      }
-      .comparison-card h3 {
-        color: var(--main-blue);
-        font-size: 1.08rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-      }
-      .comparison-card ul {
-        color: var(--main-navy);
-        font-size: 0.98rem;
-      }
-      .final-cta {
-        text-align: center;
-        margin-top: 36px;
-        padding: 28px 0;
+      .ai-avatar {
+        font-size: 2rem;
         background: var(--main-blue);
+        color: white;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .ai-content {
+        flex: 1;
+      }
+      .ai-content p {
+        font-size: 0.95rem;
+        color: #495057;
+        margin: 0 0 12px 0;
+        line-height: 1.4;
+      }
+      .ai-btn {
+        background: var(--main-blue);
+        color: white;
+        border: none;
         border-radius: 8px;
-        color: white;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
       }
-      .final-cta h3 {
+      .ai-btn:hover {
+        background: #3a6ed8;
+      }
+
+      .pass-info {
+        background: linear-gradient(135deg, #e3f0ff 0%, #f8faff 100%);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 12px;
+        border: 1px solid #e3eaf6;
+      }
+      .pass-highlight {
+        display: flex;
+        align-items: center;
+        gap: 12px;
         margin-bottom: 12px;
-        font-size: 1.25rem;
-        color: white;
       }
-      .final-cta p {
-        font-size: 1.05rem;
+      .pass-icon {
+        font-size: 2rem;
+        background: var(--main-blue);
         color: white;
-        opacity: 0.95;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
       }
-      @media (max-width: 768px) {
-        .slide {
-          padding: 28px 8px;
-          min-height: 400px;
-        }
-        .slide h1 {
-          font-size: 1.5rem;
-        }
-        .slide h2 {
-          font-size: 1.1rem;
-        }
-        .stats-grid,
-        .feature-grid,
-        .comparison-grid {
-          grid-template-columns: 1fr;
-        }
+      .pass-text h4 {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--main-navy);
+        margin: 0 0 4px 0;
+      }
+      .pass-text p {
+        font-size: 0.9rem;
+        color: #495057;
+        margin: 0;
+      }
+      .pass-stats {
+        display: flex;
+        gap: 12px;
+        font-size: 0.9rem;
+        color: var(--main-blue);
+        font-weight: 700;
+      }
+      .stat-label {
+        font-size: 0.9rem;
+        color: #495057;
+        margin-top: 3px;
       }
     </style>
   </head>
   <body>
-    <div class="presentation-container">
-      <!-- 슬라이드 1: 타이틀 -->
-      <div class="slide active title-slide">
-        <h1
-          style="
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            margin-bottom: 10px;
-          "
-        >
-          <span
-            style="
-              color: var(--main-blue);
-              font-size: 2.7rem;
-              font-weight: 900;
-              letter-spacing: 0.01em;
-            "
-            >KoreaMate</span
-          >
-        </h1>
-        <div
-          class="subtitle"
-          style="
-            font-size: 1.25rem;
-            color: var(--main-navy);
-            opacity: 0.85;
-            margin-bottom: 18px;
-            text-align: center;
-            font-weight: 500;
-            letter-spacing: -0.01em;
-          "
-        >
-          너에게 딱 맞는 한국의 도시를 소개할게
-        </div>
-        <div style="text-align: center; margin-bottom: 18px">
-          <span
-            style="
-              color: var(--main-blue);
-              font-size: 1.08rem;
-              font-weight: 600;
-            "
-          >
-            "한국의 진짜 문화를 경험하고 싶었지만, 정보가 부족해 아쉬웠다.
-            KoreaMate를 통해 해결!"</span
-          >
-        </div>
-        <div class="highlight" style="text-align: center">
-          <p style="font-size: 1.08rem"><strong>KDT 해커톤 기획서</strong></p>
-          <p style="font-size: 1.02rem">
-            지역 균형 발전을 위한 디지털 사회서비스
-          </p>
-        </div>
-      </div>
-      <!-- 슬라이드 2: 문제 인식 -->
-      <div class="slide">
-        <h2>문제 인식</h2>
-        <div class="highlight">
-          <h3>여행자 관점의 Pain Point</h3>
-          <p>
-            <strong
-              >"진짜 그 나라의 문화를 보고 싶은데, 지역축제 정보를 찾기
-              어렵다!"</strong
-            >
-          </p>
-        </div>
-        <ul>
-          <li>외국인 관광객: 지역축제 정보 접근이 매우 어려움</li>
-          <li>현지 정보 접근성 부족</li>
-          <li>기존 관광 정보: 고정된 명소 위주, 축제 정보는 부족</li>
-          <li>
-            관광객 집중: 서울/부산/제주에 편중, 지방 소외
-            <span style="color: var(--main-blue); font-size: 0.98em"
-              >(전체 외국인 관광객의 80% 이상,
-              <a
-                href="https://kto.visitkorea.or.kr/kor/notice/data/statis.kto"
-                target="_blank"
-                style="color: var(--main-blue); text-decoration: underline"
-                >KTO 2023</a
-              >)</span
-            >
-          </li>
-        </ul>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <strong>3개 도시</strong><br />관광객 집중(서울/부산/제주)
+    <div class="iphone-frame">
+      <div class="app-header">KoreaMate</div>
+      <div class="slide-area" id="slideArea">
+        <!-- 메인화면 탭 -->
+        <div class="tab-content active" id="tab-0">
+          <div class="section-title">🚂 소도시 여행 발견하기</div>
+
+          <!-- 검색바 -->
+          <div class="search-container">
+            <div class="search-bar">
+              <span class="search-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="힐링, 인스타성 카페, 숨은 맛집 등"
+                class="search-input"
+              />
+            </div>
           </div>
-          <div class="stat-card">
-            <strong>0개</strong><br />외국인 대상 지역축제 플랫폼
-          </div>
-        </div>
-        <div class="highlight" style="margin-top: 18px">
-          <table
-            style="width: 100%; border-collapse: collapse; font-size: 1rem"
-          >
-            <thead>
-              <tr style="background: #f5f7fa; color: var(--main-blue)">
-                <th
-                  style="
-                    padding: 7px 4px;
-                    border-bottom: 1.5px solid #e2e8f0;
-                    text-align: left;
-                  "
+
+          <!-- 인기 여행지 슬라이더 -->
+          <div class="feature-card">
+            <h3>🔥 인기 소도시 여행</h3>
+            <div class="festival-slider">
+              <div class="festival-card featured">
+                <div
+                  class="festival-image"
+                  style="background: linear-gradient(135deg, #4ecdc4, #44a08d)"
                 >
-                  지표
-                </th>
-                <th
-                  style="
-                    padding: 7px 4px;
-                    border-bottom: 1.5px solid #e2e8f0;
-                    text-align: left;
-                  "
+                  <span class="festival-emoji">🌿</span>
+                </div>
+                <div class="festival-info">
+                  <h4>단양 힐링여행</h4>
+                  <p>충북 • 기차 2시간 • 2박3일</p>
+                  <div class="festival-stats">
+                    <span>⭐ 4.8</span>
+                    <span>🎫 내일로패스</span>
+                  </div>
+                </div>
+              </div>
+              <div class="festival-card">
+                <div
+                  class="festival-image"
+                  style="background: linear-gradient(135deg, #ff6b6b, #ffa500)"
                 >
-                  수치
-                </th>
-                <th
-                  style="
-                    padding: 7px 4px;
-                    border-bottom: 1.5px solid #e2e8f0;
-                    text-align: left;
-                  "
-                >
-                  출처
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  축제 방문객 증가율
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  +20%
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  <a
-                    href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
-                    target="_blank"
-                    style="color: var(--main-blue); text-decoration: underline"
-                    >한국관광공사</a
-                  >
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  외국인 참여 증가 사례
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  +143%~+288%
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  매일경제
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  고양꽃박람회 방문자
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  55만명
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  공식 축제자료
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  단오제 방문자
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  62만명
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  유네스코·문화재청
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  경제 효과
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  축제당 85억 원
-                </td>
-                <td style="padding: 6px 4px; border-bottom: 1px solid #e2e8f0">
-                  <a
-                    href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
-                    target="_blank"
-                    style="color: var(--main-blue); text-decoration: underline"
-                    >한국관광공사</a
-                  >
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div style="font-size: 0.92rem; color: #888; margin-top: 8px">
-            ※ 출처:
-            <a
-              href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
-              target="_blank"
-              style="color: var(--main-blue); text-decoration: underline"
-              >한국관광공사</a
-            >, 매일경제, 공식 축제자료, 유네스코·문화재청 등<br />
-            <a
-              href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
-              target="_blank"
-              style="color: var(--main-blue); text-decoration: underline"
-              >knto.or.kr</a
-            >,
-            <a
-              href="https://datalab.visitkorea.or.kr"
-              target="_blank"
-              style="color: var(--main-blue); text-decoration: underline"
-              >datalab.visitkorea.or.kr</a
-            >,
-            <a
-              href="https://www.mk.co.kr/"
-              target="_blank"
-              style="color: var(--main-blue); text-decoration: underline"
-              >mk.co.kr</a
-            >,
-            <a
-              href="https://en.wikipedia.org/wiki/List_of_festivals_in_South_Korea"
-              target="_blank"
-              style="color: var(--main-blue); text-decoration: underline"
-              >en.wikipedia.org</a
-            >
+                  <span class="festival-emoji">🍞</span>
+                </div>
+                <div class="festival-info">
+                  <h4>군산 빵지순례</h4>
+                  <p>전북 • 기차 3시간 • 1박2일</p>
+                  <div class="festival-stats">
+                    <span>⭐ 4.6</span>
+                    <span>🎫 내일로패스</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="highlight" style="margin-top: 18px; background: #f7faff">
-          <strong style="color: var(--main-blue); font-size: 1.08rem"
-            >외국인 유치→지방경제→인프라→청년정착→지속 균형발전 선순환
-            구조</strong
-          >
-        </div>
-      </div>
-      <!-- 슬라이드 3: 아이디어 개요 -->
-      <div class="slide">
-        <h2>아이디어 개요</h2>
-        <div class="highlight">
-          <h3>KoreaMate</h3>
-          <p><strong>외국인 관광객을 위한 한국 지역축제 통합 플랫폼</strong></p>
-          <p>실시간 축제 정보, 지역 문화 체험, 커뮤니티 기능 제공</p>
-        </div>
-        <div class="feature-grid">
+
+          <!-- 카테고리별 추천 -->
           <div class="feature-card">
-            <h3>실시간 축제 정보</h3>
-            <p>전국 지역축제 일정 실시간 업데이트</p>
+            <h3>📂 키워드별 추천</h3>
+            <div class="category-grid">
+              <div class="category-item">
+                <div class="category-icon">🌿</div>
+                <span>힐링</span>
+              </div>
+              <div class="category-item">
+                <div class="category-icon">☕</div>
+                <span>인스타카페</span>
+              </div>
+              <div class="category-item">
+                <div class="category-icon">🍜</div>
+                <span>숨은맛집</span>
+              </div>
+              <div class="category-item">
+                <div class="category-icon">🚂</div>
+                <span>기차여행</span>
+              </div>
+            </div>
           </div>
+
+          <!-- 근처 여행지 -->
           <div class="feature-card">
-            <h3>다국어 지원</h3>
-            <p>영어, 중국어, 일본어 등 주요 언어 지원</p>
+            <h3>📍 근처 추천 여행지</h3>
+            <div class="nearby-festival">
+              <div class="nearby-info">
+                <h4>청주 숨은 맛집 투어</h4>
+                <p>🚗 30분 거리 • 기차 1시간</p>
+                <div class="nearby-stats">
+                  <span>⭐ 4.7</span>
+                  <span>🎫 무료</span>
+                </div>
+              </div>
+              <button class="nearby-btn">상세보기</button>
+            </div>
           </div>
+
+          <!-- AI 개인화 추천 -->
           <div class="feature-card">
-            <h3>위치 기반 추천</h3>
-            <p>현재 위치 근처 축제 정보 자동 제공</p>
+            <h3>🤖 AI 맞춤 여행 추천</h3>
+            <div class="ai-recommendation">
+              <div class="ai-avatar">🤖</div>
+              <div class="ai-content">
+                <p>
+                  "힐링을 원하시는군요! 단양의 숲속 카페와 계곡 트레킹을
+                  추천드려요"
+                </p>
+                <button class="ai-btn">여행 코스 받기</button>
+              </div>
+            </div>
           </div>
+
+          <!-- 내일로 패스 안내 -->
           <div class="feature-card">
-            <h3>커뮤니티</h3>
-            <p>후기 공유, 동행 찾기, 현지인과 소통</p>
+            <h3>🎫 내일로 패스 활용</h3>
+            <div class="pass-info">
+              <div class="pass-highlight">
+                <span class="pass-icon">🚂</span>
+                <div class="pass-text">
+                  <h4>청년 기차 여행 패스</h4>
+                  <p>5일간 전국 기차 무제한 이용</p>
+                </div>
+              </div>
+              <div class="pass-stats">
+                <span>💰 3만원</span>
+                <span>👥 25세 이하</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 슬라이드 4: MVP 핵심 기능 (AI) -->
-      <div class="slide">
-        <h2>MVP 핵심 기능 (AI)</h2>
-        <div class="highlight" style="margin-bottom: 18px; background: #f7faff">
-          <strong style="color: var(--main-blue); font-size: 1.08rem"
-            >국내외 유일 AI 추천·챗봇·감성분석 기반 지역축제 플랫폼</strong
-          >
+
+        <!-- 추천 탭 -->
+        <div class="tab-content" id="tab-1">
+          <div class="section-title">AI 추천 엔진</div>
+          <form id="recommendForm">
+            <div class="input-row">
+              <label for="keyword">키워드</label>
+              <input
+                id="keyword"
+                name="keyword"
+                type="text"
+                placeholder="힐링, 빵지순례 등"
+                required
+              />
+            </div>
+            <div class="input-row">
+              <label for="days">여행일수</label>
+              <select id="days" name="days">
+                <option value="1">1박2일</option>
+                <option value="2">2박3일</option>
+                <option value="3">3박4일</option>
+              </select>
+            </div>
+            <div class="input-row">
+              <label for="budget">예산(만원)</label>
+              <input
+                id="budget"
+                name="budget"
+                type="number"
+                min="5"
+                max="100"
+                value="20"
+              />
+            </div>
+            <button class="btn" type="submit">추천받기</button>
+          </form>
+          <div class="recommend-cards" id="recommendResult"></div>
         </div>
-        <div class="feature-grid">
-          <div
-            class="feature-card"
-            style="border: 2px solid var(--main-blue); background: #f7faff"
-          >
-            <h3
+        <!-- 스탬프 탭 -->
+        <div class="tab-content" id="tab-2">
+          <div class="section-title">QR 스탬프 & 리워드</div>
+          <div class="feature-card">
+            <h3>스탬프 적립</h3>
+            <div class="stamp-ring" id="stampRing"><span>2/5</span></div>
+            <button class="btn" id="qrBtn">QR 스캔(모의)</button>
+            <div
+              id="stampToast"
               style="
-                font-size: 1.15rem;
-                color: var(--main-blue);
-                font-weight: 800;
-              "
-            >
-              AI 축제 추천 매칭 테스트
-              <span
-                style="
-                  background: var(--main-blue);
-                  color: #fff;
-                  font-size: 0.85rem;
-                  padding: 2px 8px;
-                  border-radius: 8px;
-                  margin-left: 6px;
-                  vertical-align: middle;
-                "
-                >MVP</span
-              >
-            </h3>
-            <p>
-              <strong
-                >여행 스타일, 취향, 성격(MBTI 등) 기반<br />어울리는 지역 축제
-                매칭</strong
-              >
-            </p>
-            <ul>
-              <li>단순 리스트가 아닌 감성적 몰입 + 퍼스널화</li>
-            </ul>
-            <p style="font-size: 0.97rem; color: #888">
-              <span
-                style="
-                  background: #e2e8f0;
-                  border-radius: 8px;
-                  padding: 2px 8px;
-                  margin-right: 4px;
-                "
-                >💬 예시:</span
-              >당신은 '슬로우 라이프형 여행자' → 남해 바다마을 축제가 잘
-              어울려요!
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>
-              AI 축제 요약 & 현지화 설명 챗봇
-              <span
-                style="
-                  background: #e2e8f0;
-                  color: var(--main-blue);
-                  font-size: 0.8rem;
-                  padding: 2px 7px;
-                  border-radius: 7px;
-                  margin-left: 5px;
-                  vertical-align: middle;
-                "
-                >+ 확장 기능</span
-              >
-            </h3>
-            <p>
-              <strong
-                >GPT 기반 챗봇이 외국인의 언어로 축제 설명 + 맥락 안내</strong
-              >
-            </p>
-            <ul>
-              <li>문화적 배경까지 고려한 설명, 실질적 이해도 상승</li>
-            </ul>
-            <p style="font-size: 0.97rem; color: #888">
-              <span
-                style="
-                  background: #e2e8f0;
-                  border-radius: 8px;
-                  padding: 2px 8px;
-                  margin-right: 4px;
-                "
-                >💬 예시:</span
-              >This festival is similar to Halloween but rooted in Korean
-              ancestor worship culture (Chuseok)
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>
-              AI 기반 여행 경로 자동 설계
-              <span
-                style="
-                  background: #e2e8f0;
-                  color: var(--main-blue);
-                  font-size: 0.8rem;
-                  padding: 2px 7px;
-                  border-radius: 7px;
-                  margin-left: 5px;
-                  vertical-align: middle;
-                "
-                >+ 확장 기능</span
-              >
-            </h3>
-            <p>
-              <strong>위치, 일정, 예산 입력 → 최적 여행 코스 자동 생성</strong>
-            </p>
-            <ul>
-              <li>축제+명소+음식점+교통까지 포함, 지역 간 이동 유도</li>
-            </ul>
-            <p style="font-size: 0.97rem; color: #888">
-              <span
-                style="
-                  background: #e2e8f0;
-                  border-radius: 8px;
-                  padding: 2px 8px;
-                  margin-right: 4px;
-                "
-                >💬 예시:</span
-              >3박 4일 전라도 축제 여행 코스 자동 생성
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>
-              AI 축제 후기 자동 요약/감성 분석
-              <span
-                style="
-                  background: #e2e8f0;
-                  color: var(--main-blue);
-                  font-size: 0.8rem;
-                  padding: 2px 7px;
-                  border-radius: 7px;
-                  margin-left: 5px;
-                  vertical-align: middle;
-                "
-                >+ 확장 기능</span
-              >
-            </h3>
-            <p>
-              <strong
-                >참가자 후기/사진/영상 → AI가 다국어 요약, 감성 분석</strong
-              >
-            </p>
-            <ul>
-              <li>언어 장벽 없이 '느낌'을 전달, 참여 동기 부여</li>
-            </ul>
-            <p style="font-size: 0.97rem; color: #888">
-              <span
-                style="
-                  background: #e2e8f0;
-                  border-radius: 8px;
-                  padding: 2px 8px;
-                  margin-right: 4px;
-                "
-                >💬 예시:</span
-              >활기차다, 로컬 커뮤니티 중심, 힐링
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>
-              AI 지역문화 비교 툴
-              <span
-                style="
-                  background: #e2e8f0;
-                  color: var(--main-blue);
-                  font-size: 0.8rem;
-                  padding: 2px 7px;
-                  border-radius: 7px;
-                  margin-left: 5px;
-                  vertical-align: middle;
-                "
-                >+ 확장 기능</span
-              >
-            </h3>
-            <p><strong>자국 문화와 비교해 해당 축제를 설명</strong></p>
-            <ul>
-              <li>문화적 낯섦 극복, 실질적 이해도 향상</li>
-            </ul>
-            <p style="font-size: 0.97rem; color: #888">
-              <span
-                style="
-                  background: #e2e8f0;
-                  border-radius: 8px;
-                  padding: 2px 8px;
-                  margin-right: 4px;
-                "
-                >💬 예시:</span
-              >이 축제는 일본의 마츠리와 유사하지만, 한국 전통 무용과 퍼포먼스가
-              중심입니다.
-            </p>
-          </div>
-        </div>
-        <div
-          style="
-            margin-top: 18px;
-            color: #666;
-            font-size: 0.98rem;
-            text-align: right;
-          "
-        >
-          ※ 챗GPT API로 요약/추천 기능만 빠르게 PoC 형태로 구현 예정
-        </div>
-      </div>
-      <!-- 슬라이드 5: 차별성 -->
-      <div class="slide">
-        <h2>핵심 차별성</h2>
-        <div class="highlight">
-          <h3>기존 서비스와의 차별점</h3>
-        </div>
-        <div class="comparison-grid">
-          <div class="comparison-card">
-            <h3>기존 서비스</h3>
-            <ul>
-              <li>관광명소 위주 정보</li>
-              <li>한국어 중심</li>
-              <li>정적인 정보</li>
-              <li>서울/부산/제주 집중</li>
-              <li>일방향 정보 제공</li>
-            </ul>
-          </div>
-          <div class="comparison-card">
-            <h3>KoreaMate</h3>
-            <ul>
-              <li>지역축제 전문 플랫폼</li>
-              <li>외국인 타겟, 다국어 지원</li>
-              <li>실시간 정보 업데이트</li>
-              <li>전국 지역 균형 커버</li>
-              <li>양방향 커뮤니티</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- 슬라이드 6: 기대 효과 -->
-      <div class="slide">
-        <h2>기대 효과</h2>
-        <div class="highlight">
-          <h3>지역균형발전 선순환 구조</h3>
-          <p>외국인 → 지방 축제 → 지역 활성화 → 인프라 개선 → 지역 발전</p>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <strong>+20%</strong><br />축제 방문객 증가<br /><span
-              style="font-size: 0.95em; color: #888"
-              >(<a
-                href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
-                target="_blank"
-                style="color: var(--main-blue); text-decoration: underline"
-                >한국관광공사</a
-              >)</span
-            >
-          </div>
-          <div class="stat-card">
-            <strong>+143~288%</strong><br />외국인 축제 참여 증가<br /><span
-              style="font-size: 0.95em; color: #888"
-              >(매일경제)</span
-            >
-          </div>
-          <div class="stat-card">
-            <strong>85억 원</strong><br />축제 1건당 경제효과<br /><span
-              style="font-size: 0.95em; color: #888"
-              >(<a
-                href="https://knto.or.kr/pressRelease/447151?curPage=8&fieldTy=&srchBeginDt=&srchCtgry=&srchEndDt=&srchKey=&srchStdg=&srchText=&utm_source=chatgpt.com"
-                target="_blank"
-                style="color: var(--main-blue); text-decoration: underline"
-                >한국관광공사</a
-              >)</span
-            >
-          </div>
-          <div class="stat-card">
-            <strong>55~62만명</strong><br />주요 축제 방문자 수<br /><span
-              style="font-size: 0.95em; color: #888"
-              >(공식자료)</span
-            >
-          </div>
-        </div>
-        <div class="highlight" style="margin-top: 18px">
-          <strong style="color: var(--main-blue); font-size: 1.08rem"
-            >1년 내 방문객 +10%, 지역소비 +15% 목표</strong
-          ><br />
-          <span style="color: #666; font-size: 0.98rem"
-            >지자체-관광거점도시 육성사업 등 정책 연계, 지역청년/로컬크리에이터
-            참여 구조로 지속성 확보</span
-          >
-        </div>
-        <div class="highlight" style="margin-top: 18px; background: #f7faff">
-          <strong style="color: var(--main-blue); font-size: 1.08rem"
-            >외국인 유치→지방경제→인프라→청년정착→지속 균형발전 선순환
-            구조</strong
-          >
-        </div>
-        <div class="implementation-timeline">
-          <div class="timeline-item">
-            <div class="timeline-number">1</div>
-            <div>
-              <h4>지방 관광객 유입 증가</h4>
-              <p>서울/부산/제주 외 지역으로 관광객 분산</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-number">2</div>
-            <div>
-              <h4>지역 경제 활성화</h4>
-              <p>숙박, 음식, 쇼핑 등 지역 소비 증가</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-number">3</div>
-            <div>
-              <h4>지역 인프라 개선</h4>
-              <p>관광 인프라, 교통, 편의시설 확충</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-number">4</div>
-            <div>
-              <h4>지속 가능한 발전</h4>
-              <p>지역 브랜드 가치 상승, 청년 유입</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 슬라이드 8: 리스크 및 대응 -->
-      <div class="slide">
-        <h2>리스크 및 대응</h2>
-        <div class="highlight" style="padding: 18px 12px">
-          <table
-            style="width: 100%; border-collapse: collapse; font-size: 1rem"
-          >
-            <thead>
-              <tr style="background: #f5f7fa; color: var(--main-blue)">
-                <th
-                  style="
-                    padding: 8px 4px;
-                    border-bottom: 1.5px solid #e2e8f0;
-                    text-align: left;
-                  "
-                >
-                  리스크
-                </th>
-                <th
-                  style="
-                    padding: 8px 4px;
-                    border-bottom: 1.5px solid #e2e8f0;
-                    text-align: left;
-                  "
-                >
-                  대응책
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
-                  공공 데이터 부족/부정확
-                </td>
-                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
-                  지자체/관광공사 협력, 크롤링 등 보완
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
-                  다국어 번역 품질
-                </td>
-                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
-                  AI 번역 + 팀 내 검수, 현지인 피드백
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
-                  축제 정보 실시간성
-                </td>
-                <td style="padding: 7px 4px; border-bottom: 1px solid #e2e8f0">
-                  주기적 데이터 동기화, 사용자 제보 반영
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <!-- 슬라이드 9: 유통/홍보 아이디어 -->
-      <div class="slide">
-        <h2>유통/홍보 전략</h2>
-        <div class="highlight">
-          <h3>실현 가능한 유통 전략</h3>
-        </div>
-        <h3
-          style="
-            font-size: 1.05rem;
-            color: var(--main-blue);
-            margin-bottom: 8px;
-          "
-        >
-          공항 진입점 활용
-        </h3>
-        <ul>
-          <li>인천공항 관광브로셔 QR코드</li>
-          <li>공항 WiFi 연결 시 랜딩페이지 노출</li>
-          <li>입국 심사 대기 디지털 사이니지</li>
-        </ul>
-        <div style="font-size: 0.98rem; color: #666; margin-bottom: 8px">
-          실제 인천공항 면세점/여행자보험 앱도 QR코드로 홍보 중(2023)
-        </div>
-        <h3
-          style="
-            font-size: 1.05rem;
-            color: var(--main-blue);
-            margin-bottom: 8px;
-          "
-        >
-          파트너십 전략
-        </h3>
-        <ul>
-          <li>한국관광공사: 공식 파트너십, 데이터 협력</li>
-          <li>지자체: 축제 정보 제공, 홍보 지원</li>
-          <li>호스텔/게스트하우스: 외국인 여행자 타겟</li>
-          <li>대학교 국제처: 교환학생 홍보</li>
-        </ul>
-        <div style="font-size: 0.98rem; color: #666; margin-top: 8px">
-          지자체-관광거점도시 육성사업 등 정책 연계, 지역청년/로컬크리에이터
-          참여 구조로 확장 가능
-        </div>
-      </div>
-      <!-- 심사기준별 자기점검 슬라이드 -->
-      <div class="slide">
-        <h2>심사기준별 자기점검</h2>
-        <div
-          class="stats-grid"
-          style="margin-bottom: 18px; grid-template-columns: 1fr 1fr"
-        >
-          <div
-            class="stat-card"
-            style="border-left: 6px solid var(--main-blue); text-align: left"
-          >
-            <h3
-              style="
-                font-size: 1.15rem;
+                display: none;
                 color: var(--main-blue);
                 font-weight: 700;
-                margin-bottom: 8px;
+                margin-top: 8px;
               "
             >
-              적합성
-              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
-                >(20점 만점)</span
-              >
-            </h3>
+              스탬프 적립 완료! (3/5)
+            </div>
+          </div>
+          <div class="feature-card">
+            <h3>리워드 상점</h3>
+            <div class="reward-gallery" id="rewardGallery"></div>
+          </div>
+        </div>
+        <!-- 네비 탭 -->
+        <div class="tab-content" id="tab-3">
+          <div class="section-title">실시간 네비게이션</div>
+          <div class="feature-card">
+            <h3>여행 경로</h3>
+            <!-- 지도 영역 -->
             <div
+              id="navMap"
               style="
-                font-size: 1.08rem;
+                width: 100%;
+                height: 200px;
+                border-radius: 12px;
+                overflow: hidden;
+                margin-bottom: 10px;
+              "
+            ></div>
+            <!-- 경로/일정 카드 -->
+            <div
+              id="navRouteCard"
+              style="
+                background: #f7fafc;
+                border-radius: 12px;
+                padding: 12px 10px;
+                margin-bottom: 8px;
+                box-shadow: 0 1px 4px 0 #e3eaf6;
+              "
+            >
+              <div style="font-size: 1.05rem; font-weight: 700; color: #4f8cff">
+                다음 장소: <span id="navNextPlace">단양 계곡</span>
+              </div>
+              <div style="font-size: 0.97rem; color: #234">
+                ETA: <span id="navETA">14:32</span> | 이동:
+                <span id="navTransport">버스</span> | 소요:
+                <span id="navDuration">18분</span>
+              </div>
+            </div>
+            <button class="btn" id="delayBtn">
+              15분 이상 지연(일정 재조정)
+            </button>
+            <div
+              id="bplanToast"
+              style="
+                display: none;
                 color: var(--main-blue);
                 font-weight: 700;
-                margin-bottom: 4px;
+                margin-top: 8px;
               "
             >
-              예상: 16~18점
+              일정이 재조정되었습니다! (근처 카페로 경로 변경)
             </div>
-            <ul style="font-size: 1.02rem; margin-left: 0">
-              <li>
-                외국인 유치→지방경제→인프라→청년정착→지속 균형발전 선순환 구조
-              </li>
-              <li>정책(관광거점도시 육성사업 등)과 연계 가능</li>
-            </ul>
-          </div>
-          <div
-            class="stat-card"
-            style="border-left: 6px solid #6c63ff; text-align: left"
-          >
-            <h3
-              style="
-                font-size: 1.15rem;
-                color: #6c63ff;
-                font-weight: 700;
-                margin-bottom: 8px;
-              "
-            >
-              창의성
-              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
-                >(30점 만점)</span
-              >
-            </h3>
-            <div
-              style="
-                font-size: 1.08rem;
-                color: #6c63ff;
-                font-weight: 700;
-                margin-bottom: 4px;
-              "
-            >
-              예상: 26~30점
-            </div>
-            <ul style="font-size: 1.02rem; margin-left: 0">
-              <li>국내외 유일 AI 추천·챗봇·감성분석 기반 지역축제 플랫폼</li>
-              <li>외국인 타겟, 다국어 커뮤니티 등 창의성 최고 수준</li>
-            </ul>
-          </div>
-          <div
-            class="stat-card"
-            style="border-left: 6px solid #00b894; text-align: left"
-          >
-            <h3
-              style="
-                font-size: 1.15rem;
-                color: #00b894;
-                font-weight: 700;
-                margin-bottom: 8px;
-              "
-            >
-              구현가능성
-              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
-                >(30점 만점)</span
-              >
-            </h3>
-            <div
-              style="
-                font-size: 1.08rem;
-                color: #00b894;
-                font-weight: 700;
-                margin-bottom: 4px;
-              "
-            >
-              예상: 24~27점
-            </div>
-            <ul style="font-size: 1.02rem; margin-left: 0">
-              <li>GPT API 기반 요약/추천 PoC로 MVP</li>
-              <li>데이터 확보는 공공+지자체 협력</li>
-            </ul>
-          </div>
-          <div
-            class="stat-card"
-            style="border-left: 6px solid #fdcb6e; text-align: left"
-          >
-            <h3
-              style="
-                font-size: 1.15rem;
-                color: #fdcb6e;
-                font-weight: 700;
-                margin-bottom: 8px;
-              "
-            >
-              기대효과
-              <span style="color: #444; font-size: 1.05rem; font-weight: 600"
-                >(20점 만점)</span
-              >
-            </h3>
-            <div
-              style="
-                font-size: 1.08rem;
-                color: #fdcb6e;
-                font-weight: 700;
-                margin-bottom: 4px;
-              "
-            >
-              예상: 14~17점
-            </div>
-            <ul style="font-size: 1.02rem; margin-left: 0">
-              <li>1년 내 방문객 10%↑, 소비 15%↑</li>
-              <li>인프라 개선→청년 유입→지속성 확보</li>
-            </ul>
           </div>
         </div>
-        <div class="highlight" style="margin-top: 8px">
-          <span style="color: #888; font-size: 0.98rem"
-            >※ 보완: 지역청년/로컬크리에이터 참여, 정책/기관 협력 구조
-            구체화</span
-          >
+        <!-- 분석 탭 -->
+        <div class="tab-content" id="tab-4">
+          <div class="section-title">소비 패턴 분석</div>
+          <div class="feature-card">
+            <h3>방문자/매출 차트</h3>
+            <canvas id="chart1" width="320" height="120"></canvas>
+          </div>
+          <div class="feature-card">
+            <h3>KPI 게이지</h3>
+            <canvas id="gauge1" width="180" height="90"></canvas>
+          </div>
         </div>
-        <div
-          class="highlight"
-          style="
-            margin-top: 24px;
-            background: #f7faff;
-            border-radius: 12px;
-            padding: 18px 20px 12px 20px;
-            box-shadow: 0 2px 8px 0 #e7ecf3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 420px;
-            margin-left: auto;
-            margin-right: auto;
-          "
-        >
-          <div
-            style="
-              font-size: 1.08rem;
-              color: var(--main-blue);
-              font-weight: 700;
-              margin-bottom: 10px;
-              letter-spacing: 0.5px;
-            "
-          >
-            참가자
-          </div>
-          <div style="display: flex; gap: 12px; margin-bottom: 6px">
-            <span
+        <!-- UGC 탭 -->
+        <div class="tab-content" id="tab-5">
+          <div class="section-title">SNS 연동 & UGC</div>
+          <form class="ugc-upload" id="ugcForm">
+            <label for="ugcImg">사진 업로드</label>
+            <input id="ugcImg" type="file" accept="image/*" multiple />
+            <div class="ugc-preview" id="ugcPreview"></div>
+            <input
+              id="ugcComment"
+              type="text"
+              maxlength="200"
+              placeholder="200자 이내 코멘트"
               style="
-                background: #e3eaf6;
+                padding: 7px 10px;
+                border-radius: 8px;
+                border: 1.2px solid #dbeafe;
+                font-size: 1rem;
+                background: #f7fafc;
                 color: #234;
-                font-weight: 600;
-                border-radius: 16px;
-                padding: 6px 18px;
-                font-size: 1.07rem;
               "
-              >김대화</span
-            >
-            <span
-              style="
-                background: #e3eaf6;
-                color: #234;
-                font-weight: 600;
-                border-radius: 16px;
-                padding: 6px 18px;
-                font-size: 1.07rem;
-              "
-              >김현정</span
-            >
-            <span
-              style="
-                background: #e3eaf6;
-                color: #234;
-                font-weight: 600;
-                border-radius: 16px;
-                padding: 6px 18px;
-                font-size: 1.07rem;
-              "
-              >홍우진</span
-            >
-          </div>
-          <div style="font-size: 0.98rem; color: #666; margin-top: 2px">
-            3인 팀, 기획/프론트/백엔드 전담 (주 스킬: 백엔드)
-          </div>
+            />
+            <button class="btn" type="submit">업로드</button>
+          </form>
+          <div id="ugcHashtags"></div>
+          <div class="feed-list" id="feedList"></div>
         </div>
       </div>
-      <!-- 슬라이드 10: 요약 -->
-      <div class="slide">
-        <h2>요약</h2>
-        <div class="highlight">
-          <h3>KoreaMate가 만드는 변화</h3>
-          <p>
-            <strong>"외국인 관광객이 한국의 진짜 모습을 발견하게 하자"</strong>
-          </p>
-        </div>
-        <div class="comparison-grid">
-          <div>
-            <h3>핵심 가치</h3>
-            <ul>
-              <li>외국인 특화 서비스</li>
-              <li>지역축제 전문 플랫폼</li>
-              <li>실시간 정보 업데이트</li>
-              <li>문화적 맥락 제공</li>
-            </ul>
-          </div>
-          <div>
-            <h3>기대 효과</h3>
-            <ul>
-              <li>지방 관광객 유입 증가</li>
-              <li>지역 경제 활성화</li>
-              <li>인프라 개선 및 발전</li>
-              <li>지역균형발전 기여</li>
-            </ul>
-          </div>
-        </div>
-        <div class="final-cta" style="margin-top: 30px">
-          <h3>함께 만들어가요!</h3>
-          <p>혁신적인 아이디어 + 팀워크 = 성공적인 해커톤</p>
-        </div>
-      </div>
-      <!-- 네비게이션 -->
-      <div class="navigation">
-        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
-          이전
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tabBtn0" onclick="goTab(0)">
+          <span class="icon">🏠</span>
+          <span style="font-size: 0.92rem">홈</span>
         </button>
-        <span class="slide-counter">
-          <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
-        </span>
-        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
-          다음
+        <button class="tab-btn" id="tabBtn1" onclick="goTab(1)">
+          <span class="icon">🧭</span>
+          <span style="font-size: 0.92rem">추천</span>
+        </button>
+        <button class="tab-btn" id="tabBtn2" onclick="goTab(2)">
+          <span class="icon">🎫</span>
+          <span style="font-size: 0.92rem">스탬프</span>
+        </button>
+        <button class="tab-btn" id="tabBtn3" onclick="goTab(3)">
+          <span class="icon">🗺️</span>
+          <span style="font-size: 0.92rem">네비</span>
+        </button>
+        <button class="tab-btn" id="tabBtn4" onclick="goTab(4)">
+          <span class="icon">📊</span>
+          <span style="font-size: 0.92rem">분석</span>
+        </button>
+        <button class="tab-btn" id="tabBtn5" onclick="goTab(5)">
+          <span class="icon">📸</span>
+          <span style="font-size: 0.92rem">UGC</span>
         </button>
       </div>
     </div>
     <script>
-      let currentSlideIndex = 0;
-      const slides = document.querySelectorAll(".slide");
-      const totalSlides = slides.length;
-      function showSlide(index) {
-        slides.forEach((slide) => slide.classList.remove("active"));
-        slides[index].classList.add("active");
-        document.getElementById("currentSlide").textContent = index + 1;
-        document.getElementById("totalSlides").textContent = totalSlides;
-        document.getElementById("prevBtn").disabled = index === 0;
-        document.getElementById("nextBtn").disabled = index === totalSlides - 1;
+      // 탭 전환
+      const tabs = document.querySelectorAll(".tab-btn");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      function goTab(idx) {
+        tabContents.forEach((tab, i) =>
+          tab.classList.toggle("active", i === idx)
+        );
+        tabs.forEach((tab, i) => tab.classList.toggle("active", i === idx));
       }
-      function changeSlide(direction) {
-        currentSlideIndex += direction;
-        if (currentSlideIndex < 0) currentSlideIndex = 0;
-        if (currentSlideIndex >= totalSlides)
-          currentSlideIndex = totalSlides - 1;
-        showSlide(currentSlideIndex);
-      }
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowRight") changeSlide(1);
-        if (e.key === "ArrowLeft") changeSlide(-1);
+
+      // 스와이프 내비게이션
+      let startX = null;
+      const slideArea = document.getElementById("slideArea");
+
+      slideArea.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
       });
-      showSlide(0);
+
+      slideArea.addEventListener("touchend", (e) => {
+        if (startX === null) return;
+        const endX = e.changedTouches[0].clientX;
+        const diff = endX - startX;
+        let activeIdx = Array.from(tabContents).findIndex((s) =>
+          s.classList.contains("active")
+        );
+        if (diff > 60 && activeIdx > 0) goTab(activeIdx - 1);
+        if (diff < -60 && activeIdx < tabContents.length - 1)
+          goTab(activeIdx + 1);
+        startX = null;
+      });
+
+      // 메인화면 인터랙션
+      document.querySelectorAll(".festival-card").forEach((card) => {
+        card.addEventListener("click", function () {
+          this.style.transform = "scale(0.98)";
+          setTimeout(() => {
+            this.style.transform = "scale(1)";
+          }, 150);
+        });
+      });
+
+      document.querySelectorAll(".category-item").forEach((item) => {
+        item.addEventListener("click", function () {
+          this.style.transform = "scale(0.95)";
+          setTimeout(() => {
+            this.style.transform = "scale(1)";
+          }, 150);
+        });
+      });
+
+      document.querySelectorAll(".nearby-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          this.style.transform = "scale(0.95)";
+          setTimeout(() => {
+            this.style.transform = "scale(1)";
+          }, 150);
+        });
+      });
+
+      document.querySelectorAll(".ai-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          this.style.transform = "scale(0.95)";
+          setTimeout(() => {
+            this.style.transform = "scale(1)";
+          }, 150);
+        });
+      });
+
+      // 추천 탭: 가짜 추천 결과
+      const recommendForm = document.getElementById("recommendForm");
+      const recommendResult = document.getElementById("recommendResult");
+      const mockCourses = [
+        {
+          title: "2박3일 충북숲트립",
+          desc: "힐링/자연/로컬맛집",
+          price: "32만원",
+          tag: "#힐링 #자연",
+        },
+        {
+          title: "1박2일 군산빵투어",
+          desc: "빵지순례/카페/역사",
+          price: "18만원",
+          tag: "#빵지순례 #카페",
+        },
+        {
+          title: "3박4일 전라도축제",
+          desc: "축제/음식/체험",
+          price: "45만원",
+          tag: "#축제 #음식",
+        },
+      ];
+      recommendForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        recommendResult.innerHTML = "";
+        mockCourses.slice(0, 2).forEach((c) => {
+          recommendResult.innerHTML += `<div class='recommend-card'><strong>${c.title}</strong><div>${c.desc}</div><div>${c.price}</div><div style='color:#4f8cff;font-size:0.93rem;'>${c.tag}</div><button class='btn' style='padding:4px 10px;font-size:0.95rem;margin-top:6px;'>코스 보기</button></div>`;
+        });
+      });
+
+      // 스탬프 탭: QR, 스탬프, 리워드
+      let stampCount = 2;
+      const stampRing = document.getElementById("stampRing");
+      const qrBtn = document.getElementById("qrBtn");
+      const stampToast = document.getElementById("stampToast");
+      qrBtn.addEventListener("click", function () {
+        if (stampCount < 5) {
+          stampCount++;
+          stampRing.innerHTML = `<span>${stampCount}/5</span>`;
+          stampToast.innerText = `스탬프 적립 완료! (${stampCount}/5)`;
+          stampToast.style.display = "block";
+          setTimeout(() => {
+            stampToast.style.display = "none";
+          }, 1500);
+        }
+      });
+      // 리워드 갤러리
+      const rewardGallery = document.getElementById("rewardGallery");
+      const rewards = [
+        { name: "커피 쿠폰", need: 3 },
+        { name: "로컬 기념품", need: 5 },
+        { name: "축제 티켓", need: 7 },
+      ];
+      rewardGallery.innerHTML = rewards
+        .map(
+          (r) =>
+            `<div class='reward-card'><div style='font-size:1.3rem;'>🎁</div><div style='font-weight:700;'>${r.name}</div><div style='font-size:0.95rem;color:#234;'>${r.need}개 필요</div></div>`
+        )
+        .join("");
+
+      // 네비 탭: ETA, 지연, B플랜
+      const delayBtn = document.getElementById("delayBtn");
+      const bplanToast = document.getElementById("bplanToast");
+      delayBtn.addEventListener("click", function () {
+        bplanToast.style.display = "block";
+        setTimeout(() => {
+          bplanToast.style.display = "none";
+        }, 1800);
+      });
+
+      // 분석 탭: Chart.js
+      let chart1, gauge1;
+      setTimeout(() => {
+        const ctx1 = document.getElementById("chart1").getContext("2d");
+        chart1 = new Chart(ctx1, {
+          type: "bar",
+          data: {
+            labels: ["2021", "2022", "2023"],
+            datasets: [
+              {
+                label: "방문자(만명)",
+                data: [12, 18, 22],
+                backgroundColor: "#4f8cff",
+              },
+              {
+                label: "매출(억원)",
+                data: [85, 120, 145],
+                backgroundColor: "#ffe066",
+              },
+            ],
+          },
+          options: {
+            responsive: false,
+            plugins: { legend: { position: "bottom" } },
+          },
+        });
+        const ctx2 = document.getElementById("gauge1").getContext("2d");
+        gauge1 = new Chart(ctx2, {
+          type: "doughnut",
+          data: {
+            labels: ["달성", "남음"],
+            datasets: [
+              { data: [72, 28], backgroundColor: ["#00b894", "#e3eaf6"] },
+            ],
+          },
+          options: {
+            rotation: -90,
+            circumference: 180,
+            cutout: "70%",
+            plugins: { legend: { display: false } },
+          },
+        });
+      }, 300);
+
+      // UGC 탭: 사진 업로드, 해시태그, 피드
+      const ugcForm = document.getElementById("ugcForm");
+      const ugcImg = document.getElementById("ugcImg");
+      const ugcPreview = document.getElementById("ugcPreview");
+      const ugcComment = document.getElementById("ugcComment");
+      const ugcHashtags = document.getElementById("ugcHashtags");
+      const feedList = document.getElementById("feedList");
+      let feed = [
+        {
+          img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+          hashtags: ["#힐링", "#자연"],
+          comment: "숲길 산책 최고!",
+          course: "2박3일 충북숲트립",
+        },
+        {
+          img: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+          hashtags: ["#빵지순례", "#카페"],
+          comment: "빵집 투어 강추",
+          course: "1박2일 군산빵투어",
+        },
+      ];
+      function renderFeed() {
+        feedList.innerHTML = feed
+          .map(
+            (f) =>
+              `<div class='feed-card'><img src='${
+                f.img
+              }'/><div class='feed-hashtags'>${f.hashtags
+                .map((h) => `<span class='hashtag-chip'>${h}</span>`)
+                .join("")}</div><div class='feed-comment'>${
+                f.comment
+              }</div><button class='feed-btn' onclick='alert("이 코스로 추천 입력값 반영!")'>같은 코스 따라가기</button></div>`
+          )
+          .join("");
+      }
+      renderFeed();
+      ugcImg.addEventListener("change", function (e) {
+        ugcPreview.innerHTML = "";
+        Array.from(e.target.files).forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = function (ev) {
+            const img = document.createElement("img");
+            img.src = ev.target.result;
+            ugcPreview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+      ugcForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        // 해시태그 Mock: 키워드 추출
+        const comment = ugcComment.value;
+        const hashtags = comment.match(/#[^\s#]+/g) || ["#여행"];
+        ugcHashtags.innerHTML = hashtags
+          .map((h) => `<span class='hashtag-chip'>${h}</span>`)
+          .join("");
+        // 피드에 추가
+        if (ugcPreview.children.length > 0) {
+          const img = ugcPreview.children[0].src;
+          feed.unshift({ img, hashtags, comment, course: "추천코스" });
+          renderFeed();
+          ugcPreview.innerHTML = "";
+          ugcComment.value = "";
+        }
+      });
+
+      // 지도/경로/마커 Mock 데이터
+      let navMap,
+        navRoute,
+        navMarkers = [],
+        navState = 0;
+      const navRoutes = [
+        // 기본 경로
+        {
+          coords: [
+            [36.6424, 127.489], // 출발(청주역)
+            [36.9931, 128.3707], // 경유(단양 계곡)
+            [37.0038, 128.322], // 도착(충주호)
+          ],
+          places: ["청주역", "단양 계곡", "충주호"],
+          next: "단양 계곡",
+          eta: "14:32",
+          transport: "버스",
+          duration: "18분",
+        },
+        // 재조정 경로
+        {
+          coords: [
+            [36.6424, 127.489], // 출발(청주역)
+            [36.991, 128.375], // 경유(근처 카페)
+            [36.9931, 128.3707], // 경유(단양 계곡)
+            [37.0038, 128.322], // 도착(충주호)
+          ],
+          places: ["청주역", "근처 카페", "단양 계곡", "충주호"],
+          next: "근처 카페",
+          eta: "14:47",
+          transport: "도보",
+          duration: "12분",
+        },
+      ];
+      function renderNavMap(state = 0) {
+        if (!navMap) {
+          navMap = L.map("navMap", {
+            zoomControl: false,
+            attributionControl: false,
+          });
+          navMap.setView(navRoutes[state].coords[0], 10);
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 18,
+          }).addTo(navMap);
+        } else {
+          navMap.eachLayer(function (layer) {
+            if (layer instanceof L.Polyline || layer instanceof L.Marker)
+              navMap.removeLayer(layer);
+          });
+          navMap.setView(navRoutes[state].coords[0], 10);
+        }
+        // 마커
+        navMarkers = navRoutes[state].coords.map((c, i) =>
+          L.marker(c, {
+            title: navRoutes[state].places[i],
+            icon: L.icon({
+              iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854878.png",
+              iconSize: [28, 28],
+              iconAnchor: [14, 28],
+            }),
+          })
+            .addTo(navMap)
+            .bindPopup(navRoutes[state].places[i])
+        );
+        // 경로(폴리라인)
+        navRoute = L.polyline(navRoutes[state].coords, {
+          color: "#4f8cff",
+          weight: 5,
+          opacity: 0.8,
+          lineJoin: "round",
+        }).addTo(navMap);
+        // 경로에 따라 지도 중심/줌 조정
+        navMap.fitBounds(navRoute.getBounds(), { padding: [20, 20] });
+        // 경로/일정 카드 정보 업데이트
+        document.getElementById("navNextPlace").innerText =
+          navRoutes[state].next;
+        document.getElementById("navETA").innerText = navRoutes[state].eta;
+        document.getElementById("navTransport").innerText =
+          navRoutes[state].transport;
+        document.getElementById("navDuration").innerText =
+          navRoutes[state].duration;
+      }
+      setTimeout(() => {
+        renderNavMap(0);
+      }, 500);
+      // 일정 재조정(지연) 버튼 클릭 시 경로/마커/일정 변경
+      const delayBtn2 = document.getElementById("delayBtn");
+      delayBtn2.addEventListener("click", function () {
+        navState = 1;
+        renderNavMap(1);
+        document.getElementById("bplanToast").style.display = "block";
+        setTimeout(() => {
+          document.getElementById("bplanToast").style.display = "none";
+        }, 1800);
+      });
     </script>
   </body>
 </html>
